@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Universitaria - Prototipo</title>
+    <!-- Carga de Tailwind CSS para un diseño responsive y limpio -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Estilo de Fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Iconos de Lucide React, simulados con SVG para un único archivo -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7f9; }
+        #app { min-height: 100vh; display: flex; flex-direction: column; }
+        .tab-button.active { border-top: 2px solid #10b981; color: #10b981; font-weight: 600; }
+        .card { background-color: white; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); }
+        .ad-card { background-color: #ffe4e6; color: #9f1239; border: 1px dashed #f9a8d4; }
+        .tab-button { transition: all 0.2s; }
+        /* Ocultar scrollbar pero permitir desplazamiento */
+        .overflow-y-auto::-webkit-scrollbar { display: none; }
+        .overflow-y-auto { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="relative">
+
+        <!-- Contenedor Principal para Vistas -->
+        <div id="main-content" class="flex-grow pt-4 pb-20 overflow-y-auto">
+            <!-- Las vistas (Home, Repositorios, etc.) se renderizarán aquí -->
+        </div>
+
+        <!-- Componente de Navegación Inferior (Visible solo si está logeado) -->
+        <nav id="bottom-navigation" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-xl hidden md:static md:border-t-0 md:shadow-none md:flex md:justify-center md:py-3">
+            <div class="flex justify-around max-w-4xl mx-auto w-full md:w-auto">
+                <!-- Botón de Inicio -->
+                <button data-section="home" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
+                    <!-- Icono Home (Casa) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span class="text-xs mt-1 hidden md:block">Inicio</span>
+                </button>
+                <!-- Botón de Repositorios -->
+                <button data-section="repositorios" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
+                    <!-- Icono Repositorios (Carpeta) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/><path d="M2 10h20"/></svg>
+                    <span class="text-xs mt-1 hidden md:block">Repositorios</span>
+                </button>
+                <!-- Botón de Foros -->
+                <button data-section="foros" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
+                    <!-- Icono Foros (Mensajes) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 1.9-5.7a1.5 1.5 0 0 1 .86-.86L21 3l-2.6-2.6"/><path d="M21 3 3 21m18-12.7L12.7 3"/></svg>
+                    <span class="text-xs mt-1 hidden md:block">Foros</span>
+                </button>
+                <!-- Botón de Aliados -->
+                <button data-section="aliados" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
+                    <!-- Icono Aliados (Mano Amigable) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11V3"/><path d="M21 7h-8"/><path d="m3 16 4 4 4-4"/><path d="M7 20v-4"/></svg>
+                    <span class="text-xs mt-1 hidden md:block">Aliados</span>
+                </button>
+                <!-- Botón de Perfil -->
+                <button data-section="perfil" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
+                    <!-- Icono Perfil (Usuario) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span class="text-xs mt-1 hidden md:block">Perfil</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mensajes de Estado (Global) -->
+        <div id="status-message" class="fixed top-0 left-0 right-0 p-4 text-center bg-red-500 text-white font-semibold hidden"></div>
+
+    </div>
+
+    <!-- Carga de Firebase SDKs -->
+    <script type="module">
+        // Importaciones de Firebase (MANDATORIO: usar estas URLs)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithCustomToken, signInAnonymously, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, orderBy, limit, onSnapshot, addDoc, serverTimestamp, getDocs, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Establecer el nivel de log (útil para desarrollo)
+        setLogLevel('Debug');
+
+        // Variables Globales (MANDATORIO: provistas por el entorno)
+        // Usamos valores por defecto si no estamos en el entorno Canvas.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'plataforma-uni-local';
+        
+        // --- CORRECCIÓN PARA PRUEBAS LOCALES (Live Server) ---
+        // Si no se encuentra la configuración de Firebase (porque se ejecuta localmente), 
+        // usamos una configuración de prueba con una API Key dummy para que initializeApp no falle.
+        const FALLBACK_FIREBASE_CONFIG = {
+            // Nota: Para usar una base de datos real o email/password, DEBES reemplazar esta clave por la tuya.
+            apiKey: "DUMMY_API_KEY_FOR_LOCAL_TESTING", 
+            authDomain: `${appId}.firebaseapp.com`,
+            projectId: appId,
+        };
+        const providedConfig = typeof __firebase_config !== 'undefined' && __firebase_config !== '' ? __firebase_config : JSON.stringify(FALLBACK_FIREBASE_CONFIG);
+        const firebaseConfig = JSON.parse(providedConfig);
+        // --- FIN CORRECCIÓN LOCAL ---
+
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth, userId = null;
+        let isAuthReady = false;
+        let currentView = 'home';
+        let currentForumId = null;
+
+        // --- MOCK DATA PARA UNIVERSIDADES PERUANAS (ACTUALIZADO CON FIIS) ---
+        const UNIVERSITIES = {
+            'UNI': {
+                name: 'Universidad Nacional de Ingeniería',
+                description: 'Principal centro de formación de ingenieros, arquitectos y científicos en el Perú.',
+                faculties: {
+                    'FIC': { name: 'Facultad de Ingeniería Civil', careers: ['Ingeniería Civil', 'Ingeniería Sanitaria'] },
+                    'FAUA': { name: 'Facultad de Arquitectura, Urbanismo y Artes', careers: ['Arquitectura', 'Urbanismo'] },
+                    'FIIS': { name: 'Facultad de Ingeniería Industrial y de Sistemas', careers: ['Ingeniería en Sistemas', 'Ingeniería Industrial', 'Ingeniería de Software'] },
+                }
+            },
+            'UNMSM': {
+                name: 'Universidad Nacional Mayor de San Marcos',
+                description: 'La universidad más antigua de América, reconocida por su excelencia en Humanidades y Ciencias de la Salud.',
+                faculties: {
+                    'FMM': { name: 'Facultad de Medicina', careers: ['Medicina Humana', 'Obstetricia'] },
+                    'FDCP': { name: 'Facultad de Derecho y Ciencia Política', careers: ['Derecho', 'Ciencia Política'] },
+                }
+            },
+            'UNALM': {
+                name: 'Universidad Nacional Agraria La Molina',
+                description: 'Especializada en ciencias agrarias, forestales y ambientales.',
+                faculties: {
+                    'FA': { name: 'Facultad de Agronomía', careers: ['Agronomía', 'Ingeniería Agrícola'] },
+                    'FC': { name: 'Facultad de Ciencias', careers: ['Biología', 'Estadística'] },
+                }
+            },
+            'UNFV': {
+                name: 'Universidad Nacional Federico Villarreal',
+                description: 'Una de las universidades nacionales más grandes con gran variedad de carreras.',
+                faculties: {
+                    'FOU': { name: 'Facultad de Odontología', careers: ['Odontología'] },
+                    'FIIS': { name: 'Facultad de Ingeniería Industrial y de Sistemas', careers: ['Ingeniería Industrial', 'Ingeniería de Sistemas'] },
+                }
+            },
+            'UNSA': {
+                name: 'Universidad Nacional de San Agustín (Arequipa)',
+                description: 'La principal institución de educación superior en el sur del Perú.',
+                faculties: {
+                    'FGGyM': { name: 'Facultad de Geología, Geofísica y Minas', careers: ['Ingeniería de Minas', 'Geología'] },
+                    'FAD': { name: 'Facultad de Administración', careers: ['Administración', 'Marketing'] },
+                }
+            }
+        };
+
+        // Función para obtener la lista de todos los foros (Universidad + Facultades)
+        function getAllForums() {
+            const forums = [];
+            for (const uniKey in UNIVERSITIES) {
+                const uni = UNIVERSITIES[uniKey];
+                // 1. Foro General de la Universidad
+                forums.push({ id: `uni-${uniKey}`, name: `Foro General ${uniKey}`, university: uniKey, type: 'university' });
+                // 2. Foros por Facultad
+                for (const facultyKey in uni.faculties) {
+                    const faculty = uni.faculties[facultyKey];
+                    forums.push({ id: `faculty-${facultyKey}-${uniKey}`, name: `Foro de ${faculty.name} (${uniKey})`, university: uniKey, faculty: facultyKey, type: 'faculty' });
+                }
+            }
+            return forums;
+        }
+
+        // Estado del usuario autenticado (se llenará desde Firestore)
+        let userProfile = {
+            fullName: 'Invitado',
+            email: '',
+            occupation: 'Preuniversitario',
+            universityKey: 'UNI', // Default
+            facultyKey: 'FIC',   // Default
+            career: 'Ingeniería Civil' // Default
+        };
+
+        // REFERENCIAS A RUTAS DE FIRESTORE
+        const getProfileDocRef = (uid) => doc(db, 'artifacts', appId, 'users', uid, 'profile', 'data');
+        const getPostsCollectionRef = () => collection(db, 'artifacts', appId, 'public', 'data', 'posts');
+        const getFilesCollectionRef = () => collection(db, 'artifacts', appId, 'public', 'data', 'files');
+
+        // --- UI UTILS ---
+        const $ = (selector) => document.querySelector(selector);
+        const $$ = (selector) => document.querySelectorAll(selector);
+
+        function showStatus(message, isError = false) {
+            const statusEl = $('#status-message');
+            statusEl.textContent = message;
+            statusEl.className = `fixed top-0 left-0 right-0 p-4 text-center font-semibold z-50 rounded-b-lg ${isError ? 'bg-red-600' : 'bg-emerald-500'} text-white`;
+            statusEl.classList.remove('hidden');
+            setTimeout(() => {
+                statusEl.classList.add('hidden');
+            }, 5000);
+        }
+
+        // --- AUTH Y FIREBASE SETUP ---
+
+        async function initFirebase() {
+            // Ya no necesitamos la comprobación de config vacía si usamos un fallback robusto
+
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Autenticación inicial con token personalizado o anónima (si no hay token, se hace de forma anónima)
+                if (initialAuthToken) {
+    await signInWithCustomToken(auth, initialAuthToken);
+} else {
+    try {
+        await signInAnonymously(auth);
+    } catch (e) {
+        console.warn("⚠️ Firebase no disponible. Activando modo invitado local.");
+
+        userId = "local-guest-" + Math.random().toString(36).substring(2);
+        userProfile = {
+            fullName: "Invitado Local",
+            email: "anonimo@local.test",
+            occupation: "Invitado",
+            universityKey: "UNI",
+            facultyKey: "FIIS",
+            career: "Ingeniería de Software"
+        };
+
+        showAppUI(true);
+        renderView("home");
+        return;
+    }
+}
+
+
+                // Observador de estado de autenticación
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        await loadUserProfile(userId);
+                        showAppUI(true);
+                        renderView(currentView); // Renderizar la vista inicial después de la carga del perfil
+                    } else {
+                        // Si el usuario cierra sesión o no se pudo autenticar (inicialmente), mostramos la vista de Login
+                        userId = null;
+                        userProfile = null;
+                        showAppUI(false);
+                    }
+                    isAuthReady = true;
+                });
+
+            } catch (error) {
+                console.error("Error al inicializar Firebase o autenticar:", error);
+                showStatus(`Error de inicio: ${error.message}`, true);
+            }
+        }
+
+        async function loadUserProfile(uid) {
+            const docRef = getProfileDocRef(uid);
+            try {
+                const docSnap = await getDoc(docRef);
+                
+                // Determinar el nombre base para el perfil (Invitado o registrado)
+                let baseName = auth.currentUser.email ? auth.currentUser.email.split('@')[0] : 'Invitado Anónimo';
+                
+                if (docSnap.exists()) {
+                    userProfile = { ...userProfile, ...docSnap.data(), email: auth.currentUser.email || 'N/A (Anónimo)' };
+                    // Si el usuario es anónimo, forzamos el nombre 'Invitado Anónimo'
+                    if (!auth.currentUser.email) {
+                        userProfile.fullName = baseName;
+                        userProfile.occupation = 'Invitado';
+                    }
+                    console.log("Perfil de usuario cargado:", userProfile);
+                } else {
+                    // Es un nuevo usuario (registrado o anónimo)
+                    userProfile = {
+                        fullName: baseName,
+                        email: auth.currentUser.email || 'N/A (Anónimo)',
+                        occupation: auth.currentUser.email ? 'Estudiante Universitario' : 'Invitado',
+                        universityKey: 'UNI',
+                        facultyKey: 'FIIS',
+                        career: 'Ingeniería de Software',
+                        createdAt: serverTimestamp()
+                    };
+                    
+                    // Solo guardamos el perfil si se ha establecido un email (no es un anónimo que acaba de entrar)
+                    if (auth.currentUser.email) {
+                        await setDoc(docRef, userProfile);
+                    }
+                }
+            } catch (e) {
+                console.error("Error al cargar/crear el perfil:", e);
+                showStatus("Error al cargar el perfil. Puede que algunas funciones estén limitadas.", true);
+            }
+        }
+
+        function showAppUI(loggedIn) {
+            const mainContent = $('#main-content');
+            if (loggedIn) {
+                mainContent.classList.remove('hidden');
+                $('#bottom-navigation').classList.remove('hidden');
+            } else {
+                // Si no está logeado, mostrar solo la vista de Login
+                mainContent.innerHTML = LoginView();
+                $('#bottom-navigation').classList.add('hidden');
+                // IMPORTANTE: Adjuntar listeners después de renderizar la vista de Login
+                attachLoginListeners(); 
+            }
+        }
+
+        // --- VISTAS Y ROUTING ---
+
+        function getUniversityData(key) {
+            return UNIVERSITIES[key] || { name: 'Desconocida', faculties: {} };
+        }
+
+        function getFacultyData(uniKey, facultyKey) {
+            const uni = getUniversityData(uniKey);
+            return uni.faculties[facultyKey] || { name: 'Desconocida', careers: [] };
+        }
+
+        function navigate(view, params = {}) {
+            currentView = view;
+            currentForumId = params.forumId || null;
+            renderView(view, params);
+            updateNavButtons(view);
+        }
+
+        function updateNavButtons(activeView) {
+            $$('.tab-button').forEach(button => {
+                button.classList.remove('active', 'text-emerald-500');
+                button.classList.add('text-gray-500');
+                // Si la vista actual es un detalle de foro, el botón de 'foros' debe estar activo
+                const viewToMatch = activeView === 'foros' && currentForumId ? 'foros' : activeView;
+
+                if (button.dataset.section === viewToMatch) {
+                    button.classList.add('active', 'text-emerald-500');
+                    button.classList.remove('text-gray-500');
+                }
+            });
+        }
+
+        function renderView(view, params = {}) {
+            const contentEl = $('#main-content');
+            contentEl.innerHTML = '';
+            
+            // Si no está autenticado, siempre forzar la vista de login
+            if (!userId) {
+                showAppUI(false);
+                return;
+            }
+
+            // Renderizar la vista solicitada
+            switch (view) {
+                case 'home':
+                    contentEl.innerHTML = HomeView();
+                    attachHomeListeners();
+                    break;
+                case 'repositorios':
+                    contentEl.innerHTML = RepositoriesView();
+                    attachRepositoriesListeners();
+                    break;
+                case 'foros':
+                    if (params.forumId) {
+                        contentEl.innerHTML = ForumDetailView(params.forumId);
+                        attachForumDetailListeners(params.forumId);
+                    } else {
+                        contentEl.innerHTML = ForumsListView();
+                        attachForumsListListeners();
+                    }
+                    break;
+                case 'aliados':
+                    contentEl.innerHTML = AliadosView();
+                    break;
+                case 'perfil':
+                    contentEl.innerHTML = ProfileView();
+                    attachProfileListeners();
+                    break;
+                default:
+                    navigate('home');
+            }
+        }
+
+        // --- VISTAS PRINCIPALES ---
+
+        function LoginView() {
+            return `
+                <div class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+                    <div id="auth-card" class="card w-full max-w-md p-6 sm:p-8">
+                        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Acceso a UniNet</h2>
+                        <form id="login-form">
+                            <input type="email" id="login-email" placeholder="Correo Electrónico" required class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
+                            <input type="password" id="login-password" placeholder="Contraseña" required class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
+                            <button type="submit" class="w-full bg-emerald-600 text-white p-3 rounded-lg font-semibold hover:bg-emerald-700 transition duration-150">Ingresar</button>
+                        </form>
+                        
+                        <!-- BOTÓN PARA INGRESO COMO INVITADO -->
+                        <button type="button" id="guest-login-button" class="w-full bg-gray-400 text-white p-3 rounded-lg font-semibold hover:bg-gray-500 transition duration-150 mt-3">Ingresar como Invitado</button>
+
+                        <p class="text-center mt-6 text-sm text-gray-600">
+                            ¿No tienes cuenta? <button id="switch-to-register" class="text-emerald-600 font-semibold hover:underline">Regístrate aquí</button>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function RegisterView() {
+            const occupationOptions = ['Estudiante Preuniversitario', 'Estudiante Universitario', 'Egresado'];
+            const universityOptions = Object.keys(UNIVERSITIES);
+
+            return `
+                <div class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+                    <div id="auth-card" class="card w-full max-w-md p-6 sm:p-8">
+                        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Crear Cuenta</h2>
+                        <form id="register-form">
+                            <input type="text" id="reg-fullName" placeholder="Nombre Completo" required class="w-full p-3 mb-4 border border-gray-300 rounded-lg">
+                            <input type="email" id="reg-email" placeholder="Correo Electrónico" required class="w-full p-3 mb-4 border border-gray-300 rounded-lg">
+                            <input type="password" id="reg-password" placeholder="Contraseña (mín. 6 caracteres)" required class="w-full p-3 mb-4 border border-gray-300 rounded-lg">
+                            
+                            <select id="reg-occupation" class="w-full p-3 mb-4 border border-gray-300 rounded-lg">
+                                ${occupationOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                            </select>
+                            
+                            <select id="reg-universityKey" class="w-full p-3 mb-4 border border-gray-300 rounded-lg">
+                                ${universityOptions.map(key => `<option value="${key}">${UNIVERSITIES[key].name}</option>`).join('')}
+                            </select>
+
+                            <select id="reg-facultyKey" class="w-full p-3 mb-4 border border-gray-300 rounded-lg">
+                                <!-- Opciones de facultad se llenarán dinámicamente -->
+                            </select>
+                            
+                            <select id="reg-career" class="w-full p-3 mb-6 border border-gray-300 rounded-lg">
+                                <!-- Opciones de carrera se llenarán dinámicamente -->
+                            </select>
+
+                            <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-150">Registrarme</button>
+                        </form>
+                        <p class="text-center mt-6 text-sm text-gray-600">
+                            ¿Ya tienes cuenta? <button id="switch-to-login" class="text-blue-600 font-semibold hover:underline">Ingresar</button>
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function HomeView() {
+            return `
+                <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Bienvenido a UniNet, ${userProfile.fullName.split(' ')[0]}</h1>
+                    <p class="text-gray-600 mb-6">Tu feed social universitario. Noticias, posts de foros a los que perteneces, y recomendaciones.</p>
+                    
+                    <!-- Sección de Recomendaciones de Foros (Mock) -->
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold text-gray-700 mb-3">Recomendaciones para ti</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="card p-4 border border-purple-200 bg-purple-50">
+                                <p class="font-bold text-purple-600">Foro: Tesis y Proyectos UNI</p>
+                                <p class="text-sm text-gray-600">Discute metodologías de investigación en tu área.</p>
+                                <button onclick="navigate('foros', {forumId: 'uni-UNI'})" class="mt-2 text-xs text-purple-700 font-semibold hover:underline">Acceder</button>
+                            </div>
+                             <div class="card p-4 border border-pink-200 bg-pink-50">
+                                <p class="font-bold text-pink-600">Foro: Vida en San Marcos</p>
+                                <p class="text-sm text-gray-600">Eventos y vida social en la Ciudad Universitaria.</p>
+                                <button onclick="navigate('foros', {forumId: 'uni-UNMSM'})" class="mt-2 text-xs text-pink-700 font-semibold hover:underline">Acceder</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feed Social de Publicaciones y Anuncios -->
+                    <div id="posts-feed" class="space-y-6">
+                        <!-- Posts y anuncios se cargarán aquí -->
+                        <div class="flex justify-center items-center h-24 text-gray-500">
+                            <svg class="animate-spin h-5 w-5 mr-3 text-emerald-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" class="opacity-75"/></svg>
+                            Cargando publicaciones del feed...
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function RepositoriesView() {
+            const userUniKey = userProfile.universityKey;
+
+            let html = `
+                <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Repositorios de Archivos</h1>
+                    <p class="text-gray-600 mb-6">Accede a documentos y recursos compartidos por universidad, facultad y carrera.</p>
+
+                    <!-- Navegación Jerárquica -->
+                    <div id="repo-navigation" class="card p-6 mb-8 space-y-4">
+                        <div id="uni-select-container">
+                            <label class="block font-semibold mb-2">1. Selecciona Universidad:</label>
+                            <select id="repo-uni-select" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="">--- Seleccionar Universidad ---</option>
+                                ${Object.keys(UNIVERSITIES).map(key => `<option value="${key}">${UNIVERSITIES[key].name} (${key})</option>`).join('')}
+                            </select>
+                        </div>
+                        <div id="repo-faculty-container" class="hidden">
+                            <label class="block font-semibold mb-2">2. Selecciona Facultad:</label>
+                            <select id="repo-faculty-select" class="w-full p-3 border border-gray-300 rounded-lg"></select>
+                        </div>
+                        <div id="repo-career-container" class="hidden">
+                            <label class="block font-semibold mb-2">3. Selecciona Carrera:</label>
+                            <select id="repo-career-select" class="w-full p-3 border border-gray-300 rounded-lg"></select>
+                        </div>
+                    </div>
+
+                    <!-- Uploader (Solo visible si el usuario pertenece a la UNI seleccionada) -->
+                    <div id="repo-uploader" class="hidden card p-6 mb-8 bg-emerald-50 border-emerald-200">
+                        <h2 class="text-xl font-semibold text-emerald-700 mb-3">Subir Archivo al Repositorio</h2>
+                        <p class="text-sm text-emerald-600 mb-4">Solo puedes subir archivos a repositorios de tu propia universidad (${userUniKey}).</p>
+                        <form id="file-upload-form" class="space-y-4">
+                            <input type="text" id="file-title" placeholder="Título del Documento" required class="w-full p-3 border border-gray-300 rounded-lg">
+                            <textarea id="file-description" placeholder="Descripción breve" rows="2" class="w-full p-3 border border-gray-300 rounded-lg"></textarea>
+                            <input type="file" id="file-input" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                            <button type="submit" class="w-full bg-emerald-600 text-white p-3 rounded-lg font-semibold hover:bg-emerald-700 transition duration-150">Subir y Compartir</button>
+                        </form>
+                    </div>
+
+                    <!-- Lista de Archivos (Contenido del Repositorio Seleccionado) -->
+                    <div id="repo-files-list" class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-gray-700">Archivos</h2>
+                        <div class="card p-4 text-center text-gray-500">Selecciona una carrera para ver su repositorio.</div>
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+
+        function ForumsListView() {
+            const allForums = getAllForums();
+            const userUniKey = userProfile.universityKey;
+
+            return `
+                <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Foros Universitarios</h1>
+                    <p class="text-gray-600 mb-6">Encuentra y participa en los foros de tu universidad y otros aliados.</p>
+
+                    <!-- Atajo a TU Universidad -->
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold text-gray-700 mb-3">Tu Universidad: ${userUniKey}</h2>
+                        <div class="card p-4 bg-yellow-50 border border-yellow-200 space-y-3">
+                            <button onclick="navigate('foros', {forumId: 'uni-${userUniKey}'})" class="w-full text-left p-3 bg-yellow-100 rounded-lg hover:bg-yellow-200 font-semibold text-yellow-800 transition">
+                                <span class="font-bold">Foro General ${userUniKey}</span> <span class="text-sm text-gray-500">(Principal)</span>
+                            </button>
+                            <p class="font-semibold text-gray-700 mt-2">Foros por Facultad:</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                ${Object.keys(UNIVERSITIES[userUniKey].faculties).map(fKey => `
+                                    <button onclick="navigate('foros', {forumId: 'faculty-${fKey}-${userUniKey}'})" class="text-left text-sm p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition">
+                                        ${UNIVERSITIES[userUniKey].faculties[fKey].name}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Todos los Foros Existentes -->
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold text-gray-700 mb-3" id="all-forums-title">Todos los Foros</h2>
+                        <div class="card p-4 space-y-3">
+                            ${allForums.map(forum => `
+                                <button onclick="navigate('foros', {forumId: '${forum.id}'})" class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                    <span class="font-bold">${forum.name}</span>
+                                    <span class="text-sm text-gray-500 ml-2">(${forum.university})</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function ForumDetailView(forumId) {
+            const forum = getAllForums().find(f => f.id === forumId);
+            if (!forum) return `<div class="p-8 text-center">Foro no encontrado.</div>`;
+
+            return `
+                <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
+                    <!-- Botón para volver a la lista de foros -->
+                    <button onclick="navigate('foros')" class="flex items-center text-emerald-600 hover:text-emerald-800 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        Volver a Foros
+                    </button>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">${forum.name}</h1>
+                    <p class="text-gray-600 mb-6">Discusiones para la ${forum.type === 'university' ? 'Universidad' : 'Facultad'}: <span class="font-semibold">${forum.university}</span></p>
+
+                    <!-- Componente para crear nuevo mensaje -->
+                    <div class="card p-4 mb-6">
+                        <h2 class="font-semibold text-gray-700 mb-3">Escribir un mensaje</h2>
+                        <form id="forum-post-form">
+                            <textarea id="post-content" rows="3" placeholder="¿Qué estás pensando o preguntando? (Max 200 caracteres)" maxlength="200" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500"></textarea>
+                            <button type="submit" class="mt-2 px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition duration-150">Publicar</button>
+                        </form>
+                    </div>
+
+                    <!-- Lista de Posts del Foro -->
+                    <div id="forum-posts-list" class="space-y-6">
+                        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Últimas Publicaciones</h2>
+                        <!-- Posts se cargarán aquí -->
+                        <div class="flex justify-center items-center h-24 text-gray-500">
+                            Cargando mensajes...
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function AliadosView() {
+            return `
+                <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Universidades Aliadas</h1>
+                    <p class="text-gray-600 mb-6">Conoce las instituciones aliadas a UniNet.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        ${Object.keys(UNIVERSITIES).map(key => {
+                            const uni = UNIVERSITIES[key];
+                            return `
+                                <div class="card p-6 border-l-4 border-blue-500 hover:shadow-lg transition duration-150">
+                                    <h2 class="text-xl font-bold text-gray-800 mb-2">${uni.name} (${key})</h2>
+                                    <p class="text-gray-600 mb-4">${uni.description}</p>
+                                    <button onclick="navigate('foros', {forumId: 'uni-${key}'})" class="text-blue-600 font-semibold hover:underline flex items-center">
+                                        Ir a Foro Principal
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    </button>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function ProfileView() {
+            // Asegurarse de usar valores por defecto si el perfil es null (aunque no debería pasar después de loadUserProfile)
+            const profile = userProfile || {};
+            const uni = getUniversityData(profile.universityKey || 'UNI');
+            const faculty = getFacultyData(profile.universityKey || 'UNI', profile.facultyKey || 'FIIS');
+            const profileName = profile.fullName || 'Invitado Anónimo';
+
+            return `
+                <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Perfil de Usuario</h1>
+                    <div class="card p-6 mb-8">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center text-white text-3xl font-bold">${profileName.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">${profileName}</h2>
+                                <p class="text-gray-500">${profile.email || 'N/A (Anónimo)'}</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="border-b pb-2">
+                                <p class="text-sm font-semibold text-gray-500">Nivel Académico:</p>
+                                <p class="text-lg font-medium text-gray-700">${profile.occupation || 'Invitado'}</p>
+                            </div>
+                            <div class="border-b pb-2">
+                                <p class="text-sm font-semibold text-gray-500">Universidad:</p>
+                                <p class="text-lg font-medium text-gray-700">${uni.name} (${profile.universityKey || 'UNI'})</p>
+                            </div>
+                            <div class="border-b pb-2">
+                                <p class="text-sm font-semibold text-gray-500">Facultad:</p>
+                                <p class="text-lg font-medium text-gray-700">${faculty.name} (${profile.facultyKey || 'FIIS'})</p>
+                            </div>
+                            <div class="pb-2">
+                                <p class="text-sm font-semibold text-gray-500">Carrera:</p>
+                                <p class="text-lg font-medium text-gray-700">${profile.career || 'Ingeniería de Software'}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="logout-button" class="w-full bg-red-600 text-white p-3 rounded-lg font-semibold hover:bg-red-700 transition duration-150">Cerrar Sesión</button>
+                </div>
+            `;
+        }
+
+        // --- MANEJADORES DE EVENTOS Y LÓGICA DE FIRESTORE ---
+
+        // LÓGICA DE AUTH
+        
+        // Función para manejar el ingreso como invitado
+        async function handleGuestLogin() {
+            try {
+                // Iniciar sesión anónimamente
+                await signInAnonymously(auth);
+                showStatus("¡Bienvenido, Invitado!");
+                // onAuthStateChanged se encargará de cargar el perfil y renderizar la app
+            } catch (error) {
+                console.error("Error al ingresar como invitado:", error);
+                showStatus("Error al ingresar como invitado. Asegúrate de que tu configuración de Firebase local sea correcta.", true);
+            }
+        }
+
+        function attachLoginListeners() {
+            // 1. Listener para el Login estándar
+            const loginForm = $('#login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = $('#login-email').value;
+                    const password = $('#login-password').value;
+
+                    try {
+                        await signInWithEmailAndPassword(auth, email, password);
+                        showStatus("¡Inicio de sesión exitoso!");
+                    } catch (error) {
+                        let errorMessage = 'Error al ingresar. Revisa tus credenciales.';
+                        if (error.code === 'auth/user-not-found') errorMessage = 'Usuario no encontrado.';
+                        if (error.code === 'auth/wrong-password') errorMessage = 'Contraseña incorrecta.';
+                        showStatus(errorMessage, true);
+                    }
+                });
+            }
+
+            // 2. Listener para el botón de invitado
+            const guestButton = $('#guest-login-button');
+            if (guestButton) {
+                guestButton.addEventListener('click', handleGuestLogin);
+            }
+
+            // 3. Listener para cambiar a Registro
+            const switchToRegisterButton = $('#switch-to-register');
+            if (switchToRegisterButton) {
+                switchToRegisterButton.addEventListener('click', () => {
+                    $('#main-content').innerHTML = RegisterView();
+                    attachRegisterListeners();
+                });
+            }
+        }
+
+        function attachRegisterListeners() {
+            const uniSelect = $('#reg-universityKey');
+            const facultySelect = $('#reg-facultyKey');
+            const careerSelect = $('#reg-career');
+
+            const updateFacultiesAndCareers = () => {
+                const uniKey = uniSelect.value;
+                const uniData = UNIVERSITIES[uniKey];
+
+                facultySelect.innerHTML = Object.keys(uniData.faculties).map(key => 
+                    `<option value="${key}">${uniData.faculties[key].name}</option>`
+                ).join('');
+                facultySelect.dispatchEvent(new Event('change')); // Trigger career update
+            };
+
+            const updateCareers = () => {
+                const uniKey = uniSelect.value;
+                const facultyKey = facultySelect.value;
+                const facultyData = getFacultyData(uniKey, facultyKey);
+
+                careerSelect.innerHTML = facultyData.careers.map(career =>
+                    `<option value="${career}">${career}</option>`
+                ).join('');
+            };
+
+            uniSelect.addEventListener('change', updateFacultiesAndCareers);
+            facultySelect.addEventListener('change', updateCareers);
+
+            // Inicializar las opciones al cargar la vista
+            updateFacultiesAndCareers();
+            
+            $('#register-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = $('#reg-email').value;
+                const password = $('#reg-password').value;
+                const fullName = $('#reg-fullName').value;
+                const occupation = $('#reg-occupation').value;
+                const universityKey = uniSelect.value;
+                const facultyKey = facultySelect.value;
+                const career = careerSelect.value;
+
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+
+                    // Guardar datos adicionales en Firestore
+                    const profileData = {
+                        fullName, email, occupation, universityKey, facultyKey, career,
+                        createdAt: serverTimestamp()
+                    };
+                    await setDoc(getProfileDocRef(user.uid), profileData);
+
+                    showStatus("¡Registro exitoso! Iniciando sesión...");
+                    // onAuthStateChanged se encargará de la navegación
+                } catch (error) {
+                    // --- GESTIÓN DE ERRORES MEJORADA ---
+                    console.error("Error de registro:", error);
+                    let errorMessage = 'Error al registrar. Inténtalo de nuevo.';
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage = 'El correo ya está en uso. Intenta ingresar con tu contraseña.';
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMessage = 'La contraseña es muy débil (mínimo 6 caracteres).';
+                    } else if (error.message) {
+                        // Fallback para mostrar el mensaje de error específico de Firebase
+                        errorMessage = `Error al registrar: ${error.message}`;
+                    }
+                    showStatus(errorMessage, true);
+                    // --- FIN GESTIÓN DE ERRORES MEJORADA ---
+                }
+            });
+
+            $('#switch-to-login').addEventListener('click', () => {
+                $('#main-content').innerHTML = LoginView();
+                attachLoginListeners();
+            });
+        }
+
+        // LÓGICA DE NAVEGACIÓN
+        function attachGlobalListeners() {
+            $$('#bottom-navigation button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const section = e.currentTarget.dataset.section;
+                    // Solo navegar a la vista principal si no es la vista de detalle de foros.
+                    if (section === 'foros') {
+                        navigate(section); // Limpiar forumId y volver a la lista
+                    } else {
+                        navigate(section);
+                    }
+                });
+            });
+        }
+
+        // LÓGICA DE HOME (FEED)
+        function attachHomeListeners() {
+            // Escuchar posts de todos los foros (para el feed)
+            const q = query(getPostsCollectionRef(), orderBy('createdAt', 'desc'), limit(15));
+            onSnapshot(q, (snapshot) => {
+                const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderPostsFeed(posts);
+            }, (error) => {
+                console.error("Error al cargar posts para el feed:", error);
+                showStatus("Error al cargar el feed.", true);
+            });
+        }
+
+        function renderPostsFeed(posts) {
+            const feedEl = $('#posts-feed');
+            if (!feedEl) return;
+
+            let html = '';
+            
+            // Intercalar posts con anuncios ficticios
+            posts.forEach((post, index) => {
+                // Renderizar Post
+                const date = post.createdAt?.toDate ? post.createdAt.toDate().toLocaleString('es-PE') : 'Hace un momento';
+                html += `
+                    <div class="card p-5 space-y-3 border-l-4 border-emerald-400">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold">${post.userName.charAt(0).toUpperCase()}</div>
+                                <div>
+                                    <p class="font-bold text-gray-800">${post.userName}</p>
+                                    <p class="text-xs text-gray-500">${post.userOccupation} en ${post.userUniversityKey}</p>
+                                </div>
+                            </div>
+                            <!-- Botón que lleva al detalle del foro -->
+                            <button onclick="navigate('foros', {forumId: '${post.forumId}'})" class="text-xs text-blue-500 hover:underline font-semibold">Ir al Foro</button>
+                        </div>
+                        <p class="text-gray-700 whitespace-pre-wrap">${post.content}</p>
+                        <p class="text-xs text-gray-400 text-right">${date}</p>
+                    </div>
+                `;
+
+                // Intercalar Anuncio Publicitario Ficticio
+                if (index % 3 === 2) {
+                    html += `
+                        <div class="ad-card p-4 text-center">
+                            <p class="text-sm font-bold">ANUNCIO: ¡Domina el inglés técnico!</p>
+                            <p class="text-xs">Cursos online con 50% de descuento para estudiantes de UNI y UNMSM. ¡Regístrate ahora!</p>
+                        </div>
+                    `;
+                }
+            });
+
+            if (posts.length === 0) {
+                 html = '<div class="card p-4 text-center text-gray-500">Aún no hay publicaciones en el feed. Sé el primero en compartir algo en un foro.</div>';
+            }
+
+            feedEl.innerHTML = html;
+        }
+
+        // LÓGICA DE FOROS (LISTA)
+        function attachForumsListListeners() {
+            // No hay listeners dinámicos adicionales en la vista de lista de foros
+        }
+
+
+        // LÓGICA DE FOROS (DETALLE)
+        function attachForumDetailListeners(forumId) {
+            const form = $('#forum-post-form');
+
+            // 1. Escuchar mensajes del foro en tiempo real
+            // Aseguramos que solo cargue posts del foro actual
+            const q = query(getPostsCollectionRef(), where('forumId', '==', forumId), orderBy('createdAt', 'desc'), limit(20));
+            onSnapshot(q, (snapshot) => {
+                const posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderForumPosts(posts);
+            }, (error) => {
+                console.error("Error al cargar posts del foro:", error);
+                showStatus("Error al cargar los mensajes del foro.", true);
+            });
+
+
+            // 2. Manejar el envío de nuevo mensaje
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const content = $('#post-content').value.trim();
+                
+                if (!content) return showStatus("El mensaje no puede estar vacío.", true);
+
+                try {
+                    await addDoc(getPostsCollectionRef(), {
+                        forumId: forumId,
+                        content: content,
+                        userId: userId,
+                        userName: userProfile.fullName || 'Anónimo',
+                        userUniversityKey: userProfile.universityKey,
+                        userOccupation: userProfile.occupation,
+                        createdAt: serverTimestamp(),
+                    });
+                    
+                    $('#post-content').value = ''; // Limpiar el campo
+                    showStatus("Mensaje publicado con éxito.");
+
+                } catch (error) {
+                    console.error("Error al publicar mensaje:", error);
+                    showStatus("Error al publicar el mensaje.", true);
+                }
+            });
+        }
+
+        function renderForumPosts(posts) {
+            const listEl = $('#forum-posts-list');
+            if (!listEl) return;
+            
+            let postsHtml = `
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Últimas Publicaciones</h2>
+            `;
+            
+            posts.forEach((post, index) => {
+                const date = post.createdAt?.toDate ? post.createdAt.toDate().toLocaleString('es-PE') : 'Hace un momento';
+
+                // Simulación de elemento de encuesta o imagen
+                let extraContent = '';
+                if (index === 0 && post.forumId.includes('uni')) {
+                    extraContent = `
+                        <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <p class="font-bold text-blue-700">📌 Encuesta Destacada:</p>
+                            <p class="text-sm">¿Debería la universidad ofrecer más cursos de verano? (Vota en los comentarios)</p>
+                        </div>
+                    `;
+                } else if (index === 1 && post.forumId.includes('faculty')) {
+                    extraContent = `
+                        <div class="mt-3 w-full h-32 bg-gray-200 flex items-center justify-center rounded-lg text-gray-500">
+                            [Lugar para Imagen/Gráfico del Post]
+                        </div>
+                    `;
+                } else if (index === 4) {
+                     extraContent = `
+                        <div class="ad-card p-4 text-center mt-3">
+                            [Lugar para PUBLICIDAD Ficticia] - Patrocina: App de Notas
+                        </div>
+                    `;
+                }
+
+                postsHtml += `
+                    <div class="card p-5 space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold">${post.userName.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <p class="font-bold text-gray-800">${post.userName}</p>
+                                <p class="text-xs text-gray-500">${post.userOccupation} | ${post.userUniversityKey}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 whitespace-pre-wrap">${post.content}</p>
+                        ${extraContent}
+                        <p class="text-xs text-gray-400 text-right">${date}</p>
+                    </div>
+                `;
+            });
+
+            if (posts.length === 0) {
+                 postsHtml += '<div class="card p-4 text-center text-gray-500">Sé el primero en publicar un mensaje en este foro.</div>';
+            }
+
+            listEl.innerHTML = postsHtml;
+        }
+
+
+        // LÓGICA DE REPOSITORIOS
+        function attachRepositoriesListeners() {
+            const uniSelect = $('#repo-uni-select');
+            const facultySelectContainer = $('#repo-faculty-container');
+            const facultySelect = $('#repo-faculty-select');
+            const careerSelectContainer = $('#repo-career-container');
+            const careerSelect = $('#repo-career-select');
+            const uploader = $('#repo-uploader');
+            const filesListEl = $('#repo-files-list');
+            
+            let selectedUni = '';
+            let selectedFaculty = '';
+            let selectedCareer = '';
+
+            const updateFaculties = () => {
+                selectedUni = uniSelect.value;
+                if (!selectedUni) {
+                    facultySelectContainer.classList.add('hidden');
+                    return;
+                }
+                
+                const uniData = UNIVERSITIES[selectedUni];
+                facultySelect.innerHTML = `<option value="">--- Seleccionar Facultad ---</option>` + 
+                    Object.keys(uniData.faculties).map(key => 
+                        `<option value="${key}">${uniData.faculties[key].name}</option>`
+                    ).join('');
+                
+                facultySelectContainer.classList.remove('hidden');
+                careerSelectContainer.classList.add('hidden');
+                updateUploaderVisibility();
+            };
+
+            const updateCareers = () => {
+                selectedFaculty = facultySelect.value;
+                if (!selectedFaculty) {
+                    careerSelectContainer.classList.add('hidden');
+                    return;
+                }
+                
+                const facultyData = getFacultyData(selectedUni, selectedFaculty);
+                careerSelect.innerHTML = `<option value="">--- Seleccionar Carrera ---</option>` + 
+                    facultyData.careers.map(career =>
+                        `<option value="${career}">${career}</option>`
+                    ).join('');
+                
+                careerSelectContainer.classList.remove('hidden');
+                updateUploaderVisibility();
+            };
+
+            const loadFiles = () => {
+                selectedCareer = careerSelect.value;
+                
+                if (!selectedCareer) {
+                    filesListEl.innerHTML = '<h2 class="text-2xl font-semibold text-gray-700">Archivos</h2><div class="card p-4 text-center text-gray-500">Selecciona una carrera para ver su repositorio.</div>';
+                    return;
+                }
+
+                filesListEl.innerHTML = '<h2 class="text-2xl font-semibold text-gray-700">Archivos en: ' + selectedCareer + '</h2><div class="flex justify-center items-center h-24 text-gray-500">Cargando archivos...</div>';
+                
+                // Escuchar archivos del repositorio en tiempo real
+                const repoPath = `${selectedUni}/${selectedFaculty}/${selectedCareer}`;
+                const q = query(getFilesCollectionRef(), where('repoPath', '==', repoPath), orderBy('createdAt', 'desc'), limit(10));
+
+                onSnapshot(q, (snapshot) => {
+                    const files = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderFilesList(files);
+                }, (error) => {
+                    console.error("Error al cargar archivos:", error);
+                    showStatus("Error al cargar los archivos del repositorio.", true);
+                });
+
+                updateUploaderVisibility();
+            };
+
+            uniSelect.addEventListener('change', updateFaculties);
+            facultySelect.addEventListener('change', updateCareers);
+            careerSelect.addEventListener('change', loadFiles);
+
+            // Manejar el envío del formulario de subida de archivo
+            $('#file-upload-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const title = $('#file-title').value.trim();
+                const description = $('#file-description').value.trim();
+                const fileInput = $('#file-input').files[0];
+
+                if (!title || !fileInput) return showStatus("Debes ingresar un título y seleccionar un archivo.", true);
+                if (!selectedCareer) return showStatus("Debes seleccionar una carrera para subir el archivo.", true);
+
+                const repoPath = `${selectedUni}/${selectedFaculty}/${selectedCareer}`;
+
+                try {
+                    // Nota: En un entorno real se subiría el archivo a Firebase Storage
+                    // Aquí simulamos el guardado de metadatos en Firestore
+                    await addDoc(getFilesCollectionRef(), {
+                        repoPath: repoPath,
+                        title: title,
+                        description: description,
+                        fileName: fileInput.name,
+                        fileSize: (fileInput.size / 1024 / 1024).toFixed(2) + ' MB', // Simulación de tamaño
+                        mimeType: fileInput.type,
+                        uploadedBy: userProfile.fullName,
+                        userUniversityKey: userProfile.universityKey,
+                        createdAt: serverTimestamp(),
+                    });
+                    
+                    $('#file-title').value = ''; 
+                    $('#file-description').value = '';
+                    $('#file-input').value = null; // Limpiar input file
+                    showStatus("¡Archivo subido y metadatos guardados con éxito en el repositorio!");
+
+                } catch (error) {
+                    console.error("Error al subir archivo (simulado):", error);
+                    showStatus("Error al guardar el archivo.", true);
+                }
+            });
+            
+            function updateUploaderVisibility() {
+                // El uploader solo es visible si se ha seleccionado una carrera y si la universidad seleccionada
+                // es la misma que la del usuario para simular control de acceso
+                // Además, si el usuario es "Invitado Anónimo", no puede subir archivos
+                const isAnonymous = userProfile.fullName === 'Invitado Anónimo';
+                if (selectedCareer && selectedUni === userProfile.universityKey && !isAnonymous) {
+                    uploader.classList.remove('hidden');
+                } else {
+                    uploader.classList.add('hidden');
+                }
+            }
+
+            // Llamar a esta función al inicio si el usuario ya está logeado como invitado
+            updateUploaderVisibility();
+        }
+
+        function renderFilesList(files) {
+            const listEl = $('#repo-files-list');
+            if (!listEl) return;
+
+            let filesHtml = '<h2 class="text-2xl font-semibold text-gray-700">Archivos</h2>';
+            
+            if (files.length === 0) {
+                 filesHtml += '<div class="card p-4 text-center text-gray-500">No hay archivos en este repositorio.</div>';
+            } else {
+                filesHtml += '<div class="space-y-3">';
+                files.forEach(file => {
+                    filesHtml += `
+                        <div class="card p-4 flex justify-between items-center border-l-4 border-blue-400">
+                            <div>
+                                <p class="font-bold text-gray-800">${file.title} (${file.fileName})</p>
+                                <p class="text-sm text-gray-600">${file.description || 'Sin descripción'}</p>
+                                <p class="text-xs text-gray-500 mt-1">Subido por: ${file.uploadedBy} | ${file.fileSize}</p>
+                            </div>
+                            <a href="#" class="text-blue-600 font-semibold text-sm hover:underline" onclick="showStatus('Descarga simulada de ${file.fileName}', false); return false;">Descargar</a>
+                        </div>
+                    `;
+                });
+                filesHtml += '</div>';
+            }
+            listEl.innerHTML = filesHtml;
+        }
+        
+        // LÓGICA DE PERFIL
+        function attachProfileListeners() {
+            $('#logout-button').addEventListener('click', async () => {
+                try {
+                    await signOut(auth);
+                    showStatus("Sesión cerrada correctamente.");
+                    // showAppUI(false) se activará a través de onAuthStateChanged
+                } catch (error) {
+                    console.error("Error al cerrar sesión:", error);
+                    showStatus("Error al cerrar sesión.", true);
+                }
+            });
+        }
+
+
+        // Exponer las funciones al objeto global 'window' para que sean accesibles desde los atributos onclick en el HTML.
+        window.navigate = navigate;
+        window.showStatus = showStatus;
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+            attachGlobalListeners(); // Attach navigation listeners
+        });
+    </script>
+</body>
+</html>
