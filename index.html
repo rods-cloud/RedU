@@ -386,7 +386,7 @@
             return `
                 <div class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
                     <div id="auth-card" class="card w-full max-w-md p-6 sm:p-8">
-                        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Acceso a UniNet</h2>
+                        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Acceso a RedU</h2>
                         <form id="login-form">
                             <input type="email" id="login-email" placeholder="Correo Electrónico" required class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
                             <input type="password" id="login-password" placeholder="Contraseña" required class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
@@ -446,7 +446,7 @@
         function HomeView() {
             return `
                 <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Bienvenido a UniNet, ${userProfile.fullName.split(' ')[0]}</h1>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Bienvenido a RedU, ${userProfile.fullName.split(' ')[0]}</h1>
                     <p class="text-gray-600 mb-6">Tu feed social universitario. Noticias, posts de foros a los que perteneces, y recomendaciones.</p>
                     
                     <!-- Sección de Recomendaciones de Foros (Mock) -->
@@ -609,7 +609,7 @@
             return `
                 <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
                     <h1 class="text-3xl font-bold text-gray-800 mb-6">Universidades Aliadas</h1>
-                    <p class="text-gray-600 mb-6">Conoce las instituciones aliadas a UniNet.</p>
+                    <p class="text-gray-600 mb-6">Conoce las instituciones aliadas a RedU.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         ${Object.keys(UNIVERSITIES).map(key => {
@@ -1173,4 +1173,5 @@
     </script>
 </body>
 </html>
+
 
