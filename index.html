@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma Universitaria - Prototipo</title>
-    <!-- Carga de Tailwind CSS para un diseño responsive y limpio -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Estilo de Fuente Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <!-- Iconos de Lucide React, simulados con SVG para un único archivo -->
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f4f7f9; }
         #app { min-height: 100vh; display: flex; flex-direction: column; }
@@ -25,83 +22,67 @@
 
     <div id="app" class="relative">
 
-        <!-- Contenedor Principal para Vistas -->
         <div id="main-content" class="flex-grow pt-4 pb-20 overflow-y-auto">
-            <!-- Las vistas (Home, Repositorios, etc.) se renderizarán aquí -->
-        </div>
+            </div>
 
-        <!-- Componente de Navegación Inferior (Visible solo si está logeado) -->
         <nav id="bottom-navigation" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-xl hidden md:static md:border-t-0 md:shadow-none md:flex md:justify-center md:py-3">
             <div class="flex justify-around max-w-4xl mx-auto w-full md:w-auto">
-                <!-- Botón de Inicio -->
                 <button data-section="home" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
-                    <!-- Icono Home (Casa) -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                     <span class="text-xs mt-1 hidden md:block">Inicio</span>
                 </button>
-                <!-- Botón de Repositorios -->
                 <button data-section="repositorios" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
-                    <!-- Icono Repositorios (Carpeta) -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/><path d="M2 10h20"/></svg>
                     <span class="text-xs mt-1 hidden md:block">Repositorios</span>
                 </button>
-                <!-- Botón de Foros -->
                 <button data-section="foros" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
-                    <!-- Icono Foros (Mensajes) -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 1.9-5.7a1.5 1.5 0 0 1 .86-.86L21 3l-2.6-2.6"/><path d="M21 3 3 21m18-12.7L12.7 3"/></svg>
                     <span class="text-xs mt-1 hidden md:block">Foros</span>
                 </button>
-                <!-- Botón de Aliados -->
                 <button data-section="aliados" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
-                    <!-- Icono Aliados (Mano Amigable) -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11V3"/><path d="M21 7h-8"/><path d="m3 16 4 4 4-4"/><path d="M7 20v-4"/></svg>
                     <span class="text-xs mt-1 hidden md:block">Aliados</span>
                 </button>
-                <!-- Botón de Perfil -->
                 <button data-section="perfil" class="tab-button flex flex-col items-center p-2 text-gray-500 hover:text-emerald-500 focus:outline-none w-1/5 md:w-auto">
-                    <!-- Icono Perfil (Usuario) -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     <span class="text-xs mt-1 hidden md:block">Perfil</span>
                 </button>
             </div>
         </nav>
 
-        <!-- Mensajes de Estado (Global) -->
         <div id="status-message" class="fixed top-0 left-0 right-0 p-4 text-center bg-red-500 text-white font-semibold hidden"></div>
 
     </div>
 
-    <!-- Carga de Firebase SDKs -->
     <script type="module">
         // Importaciones de Firebase (MANDATORIO: usar estas URLs)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithCustomToken, signInAnonymously, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, orderBy, limit, onSnapshot, addDoc, serverTimestamp, getDocs, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getStorage } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js"; // Añadido para manejo de archivos
 
         // Establecer el nivel de log (útil para desarrollo)
         setLogLevel('Debug');
 
-        // Variables Globales (MANDATORIO: provistas por el entorno)
-        // Usamos valores por defecto si no estamos en el entorno Canvas.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'plataforma-uni-local';
-        
-        // --- CORRECCIÓN PARA PRUEBAS LOCALES (Live Server) ---
-        // Si no se encuentra la configuración de Firebase (porque se ejecuta localmente), 
-        // usamos una configuración de prueba con una API Key dummy para que initializeApp no falle.
-        const FALLBACK_FIREBASE_CONFIG = {
-            // Nota: Para usar una base de datos real o email/password, DEBES reemplazar esta clave por la tuya.
-            apiKey: "DUMMY_API_KEY_FOR_LOCAL_TESTING", 
-            authDomain: `${appId}.firebaseapp.com`,
-            projectId: appId,
+        // ====================================================================
+        // === CONFIGURACIÓN REAL DE FIREBASE (Proporcionada por el usuario) ===
+        // ====================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBn6mRHFTtGQxaxbY0-rOtg4RwkgJ_jfoY",
+            authDomain: "redu-b58b3.firebaseapp.com",
+            projectId: "redu-b58b3",
+            storageBucket: "redu-b58b3.firebasestorage.app",
+            messagingSenderId: "305235001810",
+            appId: "1:305235001810:web:be4c3a800cbc49a93d080b",
+            measurementId: "G-LVTXBKV3BR"
         };
-        const providedConfig = typeof __firebase_config !== 'undefined' && __firebase_config !== '' ? __firebase_config : JSON.stringify(FALLBACK_FIREBASE_CONFIG);
-        const firebaseConfig = JSON.parse(providedConfig);
-        // --- FIN CORRECCIÓN LOCAL ---
+        
+        // Usamos el projectId como el identificador de la aplicación en las referencias
+        const appId = firebaseConfig.projectId; 
+        const initialAuthToken = null; // No necesario para el login/registro estándar
 
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let app, db, auth, userId = null;
+        let app, db, auth, storage, userId = null; // Añadido 'storage'
         let isAuthReady = false;
         let currentView = 'home';
         let currentForumId = null;
@@ -199,37 +180,36 @@
         // --- AUTH Y FIREBASE SETUP ---
 
         async function initFirebase() {
-            // Ya no necesitamos la comprobación de config vacía si usamos un fallback robusto
-
             try {
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-
+                storage = getStorage(app); // Inicialización de Storage
+                
                 // Autenticación inicial con token personalizado o anónima (si no hay token, se hace de forma anónima)
                 if (initialAuthToken) {
-    await signInWithCustomToken(auth, initialAuthToken);
-} else {
-    try {
-        await signInAnonymously(auth);
-    } catch (e) {
-        console.warn("⚠️ Firebase no disponible. Activando modo invitado local.");
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    try {
+                        await signInAnonymously(auth);
+                    } catch (e) {
+                        console.warn("⚠️ Firebase no disponible. Activando modo invitado local.");
 
-        userId = "local-guest-" + Math.random().toString(36).substring(2);
-        userProfile = {
-            fullName: "Invitado Local",
-            email: "anonimo@local.test",
-            occupation: "Invitado",
-            universityKey: "UNI",
-            facultyKey: "FIIS",
-            career: "Ingeniería de Software"
-        };
+                        userId = "local-guest-" + Math.random().toString(36).substring(2);
+                        userProfile = {
+                            fullName: "Invitado Local",
+                            email: "anonimo@local.test",
+                            occupation: "Invitado",
+                            universityKey: "UNI",
+                            facultyKey: "FIIS",
+                            career: "Ingeniería de Software"
+                        };
 
-        showAppUI(true);
-        renderView("home");
-        return;
-    }
-}
+                        showAppUI(true);
+                        renderView("home");
+                        return;
+                    }
+                }
 
 
                 // Observador de estado de autenticación
@@ -393,7 +373,6 @@
                             <button type="submit" class="w-full bg-emerald-600 text-white p-3 rounded-lg font-semibold hover:bg-emerald-700 transition duration-150">Ingresar</button>
                         </form>
                         
-                        <!-- BOTÓN PARA INGRESO COMO INVITADO -->
                         <button type="button" id="guest-login-button" class="w-full bg-gray-400 text-white p-3 rounded-lg font-semibold hover:bg-gray-500 transition duration-150 mt-3">Ingresar como Invitado</button>
 
                         <p class="text-center mt-6 text-sm text-gray-600">
@@ -426,12 +405,10 @@
                             </select>
 
                             <select id="reg-facultyKey" class="w-full p-3 mb-4 border border-gray-300 rounded-lg">
-                                <!-- Opciones de facultad se llenarán dinámicamente -->
-                            </select>
+                                </select>
                             
                             <select id="reg-career" class="w-full p-3 mb-6 border border-gray-300 rounded-lg">
-                                <!-- Opciones de carrera se llenarán dinámicamente -->
-                            </select>
+                                </select>
 
                             <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-150">Registrarme</button>
                         </form>
@@ -449,7 +426,6 @@
                     <h1 class="text-3xl font-bold text-gray-800 mb-6">Bienvenido a RedU, ${userProfile.fullName.split(' ')[0]}</h1>
                     <p class="text-gray-600 mb-6">Tu feed social universitario. Noticias, posts de foros a los que perteneces, y recomendaciones.</p>
                     
-                    <!-- Sección de Recomendaciones de Foros (Mock) -->
                     <div class="mb-8">
                         <h2 class="text-xl font-semibold text-gray-700 mb-3">Recomendaciones para ti</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -466,9 +442,7 @@
                         </div>
                     </div>
 
-                    <!-- Feed Social de Publicaciones y Anuncios -->
                     <div id="posts-feed" class="space-y-6">
-                        <!-- Posts y anuncios se cargarán aquí -->
                         <div class="flex justify-center items-center h-24 text-gray-500">
                             <svg class="animate-spin h-5 w-5 mr-3 text-emerald-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" class="opacity-75"/></svg>
                             Cargando publicaciones del feed...
@@ -486,7 +460,6 @@
                     <h1 class="text-3xl font-bold text-gray-800 mb-6">Repositorios de Archivos</h1>
                     <p class="text-gray-600 mb-6">Accede a documentos y recursos compartidos por universidad, facultad y carrera.</p>
 
-                    <!-- Navegación Jerárquica -->
                     <div id="repo-navigation" class="card p-6 mb-8 space-y-4">
                         <div id="uni-select-container">
                             <label class="block font-semibold mb-2">1. Selecciona Universidad:</label>
@@ -505,7 +478,6 @@
                         </div>
                     </div>
 
-                    <!-- Uploader (Solo visible si el usuario pertenece a la UNI seleccionada) -->
                     <div id="repo-uploader" class="hidden card p-6 mb-8 bg-emerald-50 border-emerald-200">
                         <h2 class="text-xl font-semibold text-emerald-700 mb-3">Subir Archivo al Repositorio</h2>
                         <p class="text-sm text-emerald-600 mb-4">Solo puedes subir archivos a repositorios de tu propia universidad (${userUniKey}).</p>
@@ -517,7 +489,6 @@
                         </form>
                     </div>
 
-                    <!-- Lista de Archivos (Contenido del Repositorio Seleccionado) -->
                     <div id="repo-files-list" class="space-y-4">
                         <h2 class="text-2xl font-semibold text-gray-700">Archivos</h2>
                         <div class="card p-4 text-center text-gray-500">Selecciona una carrera para ver su repositorio.</div>
@@ -536,7 +507,6 @@
                     <h1 class="text-3xl font-bold text-gray-800 mb-6">Foros Universitarios</h1>
                     <p class="text-gray-600 mb-6">Encuentra y participa en los foros de tu universidad y otros aliados.</p>
 
-                    <!-- Atajo a TU Universidad -->
                     <div class="mb-8">
                         <h2 class="text-xl font-semibold text-gray-700 mb-3">Tu Universidad: ${userUniKey}</h2>
                         <div class="card p-4 bg-yellow-50 border border-yellow-200 space-y-3">
@@ -554,7 +524,6 @@
                         </div>
                     </div>
 
-                    <!-- Todos los Foros Existentes -->
                     <div class="mb-8">
                         <h2 class="text-xl font-semibold text-gray-700 mb-3" id="all-forums-title">Todos los Foros</h2>
                         <div class="card p-4 space-y-3">
@@ -576,7 +545,6 @@
 
             return `
                 <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
-                    <!-- Botón para volver a la lista de foros -->
                     <button onclick="navigate('foros')" class="flex items-center text-emerald-600 hover:text-emerald-800 mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                         Volver a Foros
@@ -584,7 +552,6 @@
                     <h1 class="text-3xl font-bold text-gray-800 mb-2">${forum.name}</h1>
                     <p class="text-gray-600 mb-6">Discusiones para la ${forum.type === 'university' ? 'Universidad' : 'Facultad'}: <span class="font-semibold">${forum.university}</span></p>
 
-                    <!-- Componente para crear nuevo mensaje -->
                     <div class="card p-4 mb-6">
                         <h2 class="font-semibold text-gray-700 mb-3">Escribir un mensaje</h2>
                         <form id="forum-post-form">
@@ -593,10 +560,8 @@
                         </form>
                     </div>
 
-                    <!-- Lista de Posts del Foro -->
                     <div id="forum-posts-list" class="space-y-6">
                         <h2 class="text-2xl font-semibold text-gray-700 mb-4">Últimas Publicaciones</h2>
-                        <!-- Posts se cargarán aquí -->
                         <div class="flex justify-center items-center h-24 text-gray-500">
                             Cargando mensajes...
                         </div>
@@ -853,7 +818,6 @@
                                     <p class="text-xs text-gray-500">${post.userOccupation} en ${post.userUniversityKey}</p>
                                 </div>
                             </div>
-                            <!-- Botón que lleva al detalle del foro -->
                             <button onclick="navigate('foros', {forumId: '${post.forumId}'})" class="text-xs text-blue-500 hover:underline font-semibold">Ir al Foro</button>
                         </div>
                         <p class="text-gray-700 whitespace-pre-wrap">${post.content}</p>
@@ -1173,5 +1137,6 @@
     </script>
 </body>
 </html>
+
 
 
